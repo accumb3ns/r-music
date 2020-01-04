@@ -51,16 +51,26 @@ hot_theme_grid <- theme(panel.grid.major.y = element_line(color="black", linetyp
 hot_colors <- inferno(n=9)
 ```
 
+```{bash eval=FALSE, include=FALSE}
+# brew install ffmpeg
+# convert mp3 to wav
+ffmpeg -i ../iTunes/iTunes\ Media/Music/Radiohead/Kid\ A/08\ Idioteque.mp3 data/Radiohead_Idioteque.wav
+```
+
 ```{r load or create waveforms}
 # generate waves
 sine440 <- sine(440)
 a_notes <- sine(440) + sine(880) + sine(1660)
 
+# or, load from a wav file
+wavefile_path <- "data/Radiohead_Idioteque.wav"
+wav <- readWave(wavefile_path)
+
 ```
 
 ```{r plot}
 # spectrogram
-ggspectro(a_notes@left, f = a_notes@samp.rate) +
+ggspectro(wav@left, f = wav@samp.rate) +
   geom_raster(aes(fill=amplitude), hjust = 0, vjust = 0, interpolate = F) +
   scale_fill_gradientn(colours = hot_colors, name = "Amplitude \n (dB)", na.value = "transparent", limits = c(-60,0)) +
   hot_theme_grid
